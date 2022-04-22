@@ -1,2 +1,10 @@
 # Django-cooking recipes
-alpha project on django with website chitai-gorod
+
+Проект django. </br>
+Краткое описание
+<hr>
+Парсинг рецептов здорового питания с сайта grandkulinar.ru. (в целом код легко подойдет для парсинга любых рецептов с этого сайта) 
+</br>Запуск парсинга выполняется командой:
+</br><code> python manage.py get_new_dishes </code>
+</br></br>Далее информация заносится в БД. 
+</br></br><i>На данный момент парсинг выполняется только базовой информации.</i>
