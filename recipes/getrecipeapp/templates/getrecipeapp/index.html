@@ -1,0 +1,31 @@
+{% extends 'base_templates.html' %}
+{% block title %} Главная страница {% endblock %}
+{% block style %}
+    <style>
+       .leftimg {
+        float:left; /* Выравнивание по левому краю */
+        margin: 34px 17px 7px 0; /* Отступы вокруг картинки */
+       }
+      </style>
+{% endblock %}
+{% block context %}
+    <div class="col-md-10">
+        <!-- Post preview-->
+        {% for item in dishes %}
+        <div class="post-preview">
+            <a href="{% url 'dishes:post' id=item.id %}">
+                <h2 class="post-title">{{ item.title }}</h2></a>
+                <img src="{{ item.image.url }}" class="leftimg"/>
+                <p class="post-subtitle">{{ item.description }}</p>
+
+            <p class="post-meta">
+                Время: {{ item.timeprocess }}
+                Сложность: {{ item.complexity }}
+                Калорийность: {{ item.calories }}
+            </p>
+        </div>
+        {% endfor %}
+        <!-- Divider-->
+        <hr class="my-4" />
+        <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+{% endblock %}
