@@ -20,8 +20,11 @@ from getrecipeapp import views
 app_name = 'getrecipeapp'
 
 urlpatterns = [
-    path('', views.index_page, name='index'),
-    path('about/', views.about, name='about'),
-    path('post/<int:id>', views.post, name='post'),
-    path('contact/', views.contact_page, name='contact')
+    path('', views.DishesView.as_view(), name='index'),
+    path('about/', views.About.as_view(), name='about'),
+    path('post/article/<int:pk>', views.DishesDetailView.as_view(), name='post'),
+    path('contact/', views.Contact.as_view(), name='contact'),
+    path('create-dishes/', views.DishesCreate.as_view(), name='create-dishes'),
+    path('update-dishes/<int:pk>', views.DishesUpdate.as_view(), name='update-dishes'),
+    path('delete-dishes/<int:pk>', views.DishesDelete.as_view(), name='delete-dishes')
 ]

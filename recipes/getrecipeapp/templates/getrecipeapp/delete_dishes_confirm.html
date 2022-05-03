@@ -1,0 +1,26 @@
+{% extends 'base_templates.html' %}
+{% block title %} {{ object.title }} {% endblock %}
+{% block context %}
+    <article class="mb-4 col-md-10">
+        <div class="container px-4 px-lg-5 col-md-10" >
+            <div class="col-md-10">
+
+                <h2 class="section-heading">{{ object.title }}</h2>
+                    <div class="row gx-4 gx-lg-5 justify-content-center">
+                        <p><img src=" {{ object.image_full.url }} " /></p>
+                        <p>{{ object.description}}</p>
+                    </div>
+                </br>
+                <p style="text-align: center; color: red">Статья будет удалена, Вы уверены?</p>
+
+            </div>
+            </br>
+          <form method="post">
+            {% csrf_token %}
+              <div class="d-grid gap-2">
+                  <button class="btn btn-success text-uppercase" type="submit">Да</button>
+              </div>
+          </form>
+        </div>
+    </article>
+{% endblock %}
