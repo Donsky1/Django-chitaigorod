@@ -13,7 +13,7 @@
         <!-- Post preview-->
         {% for item in dishes %}
         <div class="post-preview">
-            <a href="{% url 'dishes:post' id=item.id %}">
+            <a href="{% url 'dishes:post' pk=item.id %}">
                 <h2 class="post-title">{{ item.title }}</h2></a>
                 <img src="{{ item.image.url }}" class="leftimg"/>
                 <p class="post-subtitle">{{ item.description }}</p>
@@ -23,9 +23,30 @@
                 Сложность: {{ item.complexity }}
                 Калорийность: {{ item.calories }}
             </p>
+            <p class="post-meta" style="text-align: right">Статью:
+                <a href="{% url 'dishes:update-dishes' pk=item.id%}">Изменить</a> /
+                <a href="{% url 'dishes:delete-dishes' pk=item.id%}">Удалить</a>
+            </p>
         </div>
         {% endfor %}
         <!-- Divider-->
         <hr class="my-4" />
-        <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+            <span class="current" style="display: block; text-align: center;">
+                Страница: {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+            </span>
+        </div></br>
+        <div class="pagination col-md-10" style="display: block; text-align: center;">
+            <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a class="btn btn-primary text-uppercase" href="?page=1">Первая</a>
+                <a class="btn btn-primary text-uppercase" href="?page={{ page_obj.previous_page_number }}">&laquo; Предыдущая</a>
+            {% endif %}
+
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-primary text-uppercase" href="?page={{ page_obj.next_page_number }}">Следующая &raquo;</a>
+                <a class="btn btn-primary text-uppercase" href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+            {% endif %}
+        </span>
+    </div>
 {% endblock %}

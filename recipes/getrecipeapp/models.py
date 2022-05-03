@@ -2,37 +2,35 @@ from django.db import models
 
 
 # Create your models here.
-class Category(models.Model):
+class CommonInfo(models.Model):
     name = models.CharField(max_length=64, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        abstract = True
+
+
+class Category(CommonInfo):
 
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
-    def __str__(self):
-        return self.name
 
-
-class Tag(models.Model):
-    name = models.CharField(max_length=32, unique=True)
+class Tag(CommonInfo):
 
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
-    def __str__(self):
-        return self.name
 
-
-class Complexity(models.Model):
-    name = models.CharField(max_length=16, unique=True)
+class Complexity(CommonInfo):
 
     class Meta:
         verbose_name = 'Уровень сложности приготовления'
         verbose_name_plural = 'Уровни сложности приготовления'
-
-    def __str__(self):
-        return self.name
 
 
 class Dishes(models.Model):

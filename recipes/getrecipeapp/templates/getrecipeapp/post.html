@@ -1,21 +1,25 @@
 {% extends 'base_templates.html' %}
-{% block title %} {{ post.title }} {% endblock %}
+{% block title %} {{ object.title }} {% endblock %}
 {% block context %}
     <article class="mb-4">
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10">
-                    <h2 class="section-heading">{{ post.title }}</h2>
-                    <p><img src=" {{ post.image_full.url }} " /></p>
-                    <p>{{ post.description_full}}</p>
+                    <h2 class="section-heading">{{ object.title }}</h2>
+                    <div class="post-meta" style="text-align: right">
+                        <a href="{% url 'dishes:update-dishes' pk=object.id%}">Изменить</a> /
+                        <a href="{% url 'dishes:delete-dishes' pk=object.id%}">Удалить</a>
+                    </div>
+                    <p><img src=" {{ object.image_full.url }} " /></p>
+                    <p>{{ object.description_full}}</p>
                     <hr>
                     {% autoescape off %}
-                    <p>{{ post.nutrition }}</p>
+                    <p>{{ object.nutrition }}</p>
                     <hr>
-                    <p>{{ post.ingredients_clr }}</p>
+                    <p>{{ object.ingredients_clr }}</p>
                     <hr>
                     <h3>Приготовление блюда по рецепту:</h3>
-                    <p>{{ post.instructions }}</p>
+                    <p>{{ object.instructions }}</p>
                     {% endautoescape %}
                 </div>
             </div>
