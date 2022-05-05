@@ -1,0 +1,8 @@
+{% extends 'base_templates.html' %}
+{% block title %} {{ object.title }} {% endblock %}
+{% block context %}
+<div class="alert alert-danger" role="alert">
+  Ошибка доступа!!! Вы не можете удалить статью, т.к это могут делать только администраторы портала
+</div>
+<p><a href="{% url 'dishes:index' %}"><button>Назад</button></a></p>
+{% endblock %}

@@ -1,8 +1,11 @@
+from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from .models import Dishes
-from .forms import ContactForm
+from .forms import ContactForm, RegistrationForm
 from django.core.mail import send_mail
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView, TemplateView
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 class DishesView(ListView):
@@ -41,14 +44,14 @@ class Contact(FormView):
         return super().form_valid(form)
 
 
-class DishesCreate(CreateView):
+class DishesCreate(LoginRequiredMixin, CreateView):
     model = Dishes
     fields = '__all__'
     success_url = reverse_lazy('dishes:index')
     template_name = 'getrecipeapp/create-dishes.html'
 
 
-class DishesUpdate(UpdateView):
+class DishesUpdate(LoginRequiredMixin, UpdateView):
     model = Dishes
     fields = '__all__'
     template_name = 'getrecipeapp/create-dishes.html'
@@ -58,7 +61,27 @@ class DishesUpdate(UpdateView):
         return reverse("dishes:post", kwargs={"pk": pk})
 
 
-class DishesDelete(DeleteView):
+class DishesDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Dishes
     success_url = reverse_lazy('dishes:index')
     template_name = 'getrecipeapp/delete_dishes_confirm.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        return redirect('dishes:access_denied')
+
+
+class UserLoginView(LoginView):
+    template_name = 'getrecipeapp/login.html'
+
+
+class UserRegistrationView(CreateView):
+    template_name = 'getrecipeapp/register.html'
+    form_class = RegistrationForm
+    success_url = reverse_lazy('dishes:login')
+
+
+class AccessDenied(TemplateView):
+    template_name = 'getrecipeapp/accesdenied.html'
