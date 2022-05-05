@@ -16,6 +16,7 @@ Including another URLconf
 
 from django.urls import path
 from getrecipeapp import views
+from django.contrib.auth.views import LogoutView
 
 app_name = 'getrecipeapp'
 
@@ -26,5 +27,9 @@ urlpatterns = [
     path('contact/', views.Contact.as_view(), name='contact'),
     path('create-dishes/', views.DishesCreate.as_view(), name='create-dishes'),
     path('update-dishes/<int:pk>', views.DishesUpdate.as_view(), name='update-dishes'),
-    path('delete-dishes/<int:pk>', views.DishesDelete.as_view(), name='delete-dishes')
+    path('delete-dishes/<int:pk>', views.DishesDelete.as_view(), name='delete-dishes'),
+    path('login/', views.UserLoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('register/', views.UserRegistrationView.as_view(), name='register'),
+    path('access_denied/', views.AccessDenied.as_view(), name='access_denied'),
 ]

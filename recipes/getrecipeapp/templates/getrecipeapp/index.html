@@ -23,10 +23,12 @@
                 Сложность: {{ item.complexity }}
                 Калорийность: {{ item.calories }}
             </p>
+            {% if user.is_authenticated %}
             <p class="post-meta" style="text-align: right">Статью:
-                <a href="{% url 'dishes:update-dishes' pk=item.id%}">Изменить</a> /
-                <a href="{% url 'dishes:delete-dishes' pk=item.id%}">Удалить</a>
+                <a href="{% url 'dishes:update-dishes' pk=item.id%}">Изменить</a>
+                 / <a href="{% url 'dishes:delete-dishes' pk=item.id%}">Удалить</a>
             </p>
+            {% endif %}
         </div>
         {% endfor %}
         <!-- Divider-->
