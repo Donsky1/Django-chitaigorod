@@ -11232,15 +11232,17 @@ header.masthead .site-heading .h1 {
   font-weight: 300;
   margin-bottom: 0.625rem;
 }
-.post-preview > .post-meta {
+
+.post-preview > .post-article {
   font-size: 1.125rem;
   font-style: italic;
   margin-top: 0;
   color: #6c757d;
 }
-.post-preview > .post-meta > a {
+.post-preview > .post-article > a {
   text-decoration: none;
 }
+
 @media (min-width: 992px) {
   .post-preview > a > .post-title {
     font-size: 2.25rem;

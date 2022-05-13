@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
-from .models import Dishes
+from .models import Dishes, Tag
 from .forms import ContactForm, RegistrationForm
 from django.core.mail import send_mail
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView, TemplateView
@@ -13,6 +13,14 @@ class DishesView(ListView):
     paginate_by = 6
     template_name = 'getrecipeapp/index.html'
     context_object_name = 'dishes'
+    ordering = '-id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'tag_list': Tag.objects.order_by('name')
+        })
+        return context
 
 
 class About(TemplateView):

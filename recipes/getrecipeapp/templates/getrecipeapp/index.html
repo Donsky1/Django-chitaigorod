@@ -11,6 +11,9 @@
 {% block context %}
     <div class="col-md-10">
         <!-- Post preview-->
+<!--        <p class="post-meta" style="font-size:11pt">-->
+<!--                Все теги: {{ tag_list.all|join:', ' }}-->
+<!--            </p>-->
         {% for item in dishes %}
         <div class="post-preview">
             <a href="{% url 'dishes:post' pk=item.id %}">
@@ -20,11 +23,14 @@
 
             <p class="post-meta">
                 Время: {{ item.timeprocess }}
-                Сложность: {{ item.complexity }}
+                {% if item.complexity %}Сложность: {{ item.complexity }}{% endif %}
                 Калорийность: {{ item.calories }}
             </p>
+            <p class="post-meta">
+                Категории: {{ item.tags.all|join:', '}}
+            </p>
             {% if user.is_authenticated %}
-            <p class="post-meta" style="text-align: right">Статью:
+            <p class="post-meta article" style="text-align: right">Статью:
                 <a href="{% url 'dishes:update-dishes' pk=item.id%}">Изменить</a>
                  / <a href="{% url 'dishes:delete-dishes' pk=item.id%}">Удалить</a>
             </p>
