@@ -1,4 +1,3 @@
-import io
 from django.test import TestCase, Client
 from getrecipeapp.models import Dishes, Tag, Category, Complexity, validate_image
 from mixer.backend.django import mixer
@@ -53,6 +52,15 @@ class DishesTestCase(TestCase):
     def test_resize_image(self):
         self.assertEqual(get_image_dimensions(self.dish.image), (150, 150))
 
+    def test_active_manager(self):
+        self.assertEqual(Dishes.objects.count(), 1)
+        self.assertEqual(self.dish.is_active, False)
+        self.dish.is_active = True
+        self.dish.save()
+        self.assertEqual(Dishes.objects.count(), 1)
+        self.assertEqual(Dishes.active_objects.count(), 1)
+        self.assertEqual(self.dish.is_active, True)
+
 
 class TestOpenView(TestCase):
 
@@ -66,7 +74,8 @@ class TestOpenView(TestCase):
         self.dish = mixer.blend(Dishes,
                                 tags__name=mixer.FAKE,
                                 image=os.path.abspath(self.path_to_tmp_img),
-                                image_full=os.path.abspath(self.path_to_tmp_img))
+                                image_full=os.path.abspath(self.path_to_tmp_img),
+                                is_active=True)
 
     def test_status_code_open_page(self):
         for page in tqdm(self.open_pages, 'Проверка доступа на открытые страницы'):
@@ -101,10 +110,6 @@ class TestOpenView(TestCase):
     def test_hidden_element(self):
         response = self.client.get('/')
         self.assertTrue('post-meta article' not in str(response.content.decode()))
-        User.objects.create_user(username='Carl', password='Carl1234567', email='carl@example.com')
-        self.client.login(username='Carl', password='Carl1234567')
-        response = self.client.get('/')
-        self.assertTrue('post-meta article' in str(response.content.decode()))
 
     def test_login_required(self):
         User.objects.create_user(username='Carl', password='Carl1234567', email='carl@example.com')
@@ -119,3 +124,104 @@ class TestOpenView(TestCase):
                                                                  'password2': 'Grandtour123456',
                                                                  'email': 'carl@example.com'})
         self.assertEqual(response.status_code, 302)
+
+    def test_search_field(self):
+        fragment = Dishes.objects.last().title.split()[-1]
+        url = '{url}?{filter}={value}'.format(
+            url=reverse_lazy('dishes:search'),
+            filter='q', value=f'{fragment}')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        url = '{url}?{filter}={value}'.format(
+            url=reverse_lazy('dishes:search'),
+            filter='q', value=f'sdfsdfas')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_content_category(self):
+        url = reverse_lazy('dishes:index-category', kwargs={'tag': str(Dishes.objects.last().category.name)})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+
+
+class TestTemplateView(TestCase):
+
+    def setUp(self) -> None:
+        self.fake = Faker()
+        self.client = Client()
+        self.path_to_tmp_img = os.path.join('media', 'images_full', 'result_image.png')
+        mixer.cycle(5).blend(Dishes,
+                             tags__name=mixer.FAKE,
+                             image=os.path.abspath(self.path_to_tmp_img),
+                             image_full=os.path.abspath(self.path_to_tmp_img),
+                             is_active=True)
+
+    def test_DishesViewTemplate(self):
+        url = reverse_lazy('dishes:index')
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/index.html')
+
+    def test_DishesViewCategoryTemplate(self):
+        url = reverse_lazy('dishes:index-category', kwargs={'tag': str(Dishes.objects.last().category.name)})
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/index_for_category.html')
+
+    def test_DishesViewSearchTemplate(self):
+        fragment = Dishes.objects.last().title.split()[-1]
+        url = '{url}?{filter}={value}'.format(
+            url=reverse_lazy('dishes:search'),
+            filter='q', value=f'{fragment}')
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/search.html')
+
+    def test_DishesDetailViewTemplate(self):
+        url = reverse_lazy("dishes:post", kwargs={"pk": Dishes.objects.last().category.pk})
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/post.html')
+
+    def test_AboutTemplate(self):
+        url = reverse_lazy('dishes:about')
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/about.html')
+
+    def test_ContactTemplate(self):
+        url = reverse_lazy('dishes:contact')
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/contact.html')
+
+    def test_DishesCreateTemplate(self):
+        User.objects.create_user(username='Carl', password='Carl1234567', email='carl@example.com')
+        self.client.login(username='Carl', password='Carl1234567')
+        url = reverse_lazy('dishes:create-dishes')
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/create-dishes.html')
+
+    def test_UserLoginViewTemplate(self):
+        url = reverse_lazy('dishes:login')
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/login.html')
+
+    def test_UserRegistrationViewTemplate(self):
+        url = reverse_lazy('dishes:register')
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/register.html')
+
+    def test_AccessDeniedTemplate(self):
+        url = reverse_lazy('dishes:access_denied')
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/accesdenied.html')
+
+    def test_DishesUpdateTemplate(self):
+        User.objects.create_user(username='Carl', password='Carl1234567', email='carl@example.com')
+        self.client.login(username='Carl', password='Carl1234567')
+        url = reverse_lazy('dishes:update-dishes', kwargs={"pk": Dishes.objects.last().category.pk})
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/create-dishes.html')
+
+    def test_DishesDeleteTemplate(self):
+        User.objects.create_user(username='Carl', password='Carl1234567', email='carl@example.com', is_superuser=True)
+        self.client.login(username='Carl', password='Carl1234567')
+        url = reverse_lazy('dishes:delete-dishes', kwargs={"pk": Dishes.objects.last().id})
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'getrecipeapp/delete_dishes_confirm.html')

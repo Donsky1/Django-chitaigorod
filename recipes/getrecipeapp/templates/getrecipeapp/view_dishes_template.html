@@ -1,0 +1,26 @@
+{% for item in dishes %}
+    <div class="post-preview">
+        <a href="{% url 'dishes:post' pk=item.id %}">
+            <h2 class="post-title">{{ item.title }}</h2></a>
+            <img src="{{ item.image.url }}" class="leftimg"/>
+            <p class="post-subtitle">{{ item.description }}</p>
+
+        <p class="post-meta">
+            Время: {{ item.timeprocess }}
+            {% if item.complexity %}Сложность: {{ item.complexity }}{% endif %}
+            Калорийность: {{ item.calories }}
+        </p>
+        <p class="post-meta">
+            Категории: {% for tag in item.tags.all %}
+                <a href="{% url 'dishes:index-category' tag=tag.name %}">{{ tag.name }}</a>,
+            {% endfor %}
+<!--                {{ item.tags.all|join:', '}}-->
+        </p>
+        {% if user.is_authenticated %}
+        <p class="post-meta article" style="text-align: right">Статью:
+            <a href="{% url 'dishes:update-dishes' pk=item.id%}">Изменить</a>
+             / <a href="{% url 'dishes:delete-dishes' pk=item.id%}">Удалить</a>
+        </p>
+        {% endif %}
+    </div>
+{% endfor %}

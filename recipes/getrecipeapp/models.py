@@ -5,7 +5,14 @@ from django.core.exceptions import ValidationError
 
 
 # Create your models here.
-class CommonInfo(models.Model):
+class ActiveManager(models.Manager):
+
+    def get_queryset(self):
+        all_objects = super().get_queryset()
+        return all_objects.filter(is_active=True)
+
+
+class NameModelMixin(models.Model):
     name = models.CharField(max_length=64, unique=True)
 
     def __str__(self):
@@ -15,21 +22,30 @@ class CommonInfo(models.Model):
         abstract = True
 
 
-class Category(CommonInfo):
+class IsActiveMixin(models.Model):
+    objects = models.Manager()
+    active_objects = ActiveManager()
+    is_active = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
+
+
+class Category(NameModelMixin):
 
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
 
-class Tag(CommonInfo):
+class Tag(NameModelMixin):
 
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
 
-class Complexity(CommonInfo):
+class Complexity(NameModelMixin):
 
     class Meta:
         verbose_name = 'Уровень сложности приготовления'
@@ -44,7 +60,7 @@ def validate_image(image_obj):
                               (round(file_size/1024/1024, 2), megabyte_limit))
 
 
-class Dishes(models.Model):
+class Dishes(IsActiveMixin):
     title = models.CharField(max_length=64, unique=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag)
