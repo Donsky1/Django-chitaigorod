@@ -1,0 +1,7 @@
+<p class="post-meta" style="font-size:11pt">
+    Все теги ({{ tag_list|length }}):
+{% for tag in tag_list %}
+    <a href="{% url 'dishes:index-category' tag=tag.name %}">{{ tag.name }}</a>
+{% endfor %}
+</p>
+<hr>

@@ -22,6 +22,8 @@ app_name = 'getrecipeapp'
 
 urlpatterns = [
     path('', views.DishesView.as_view(), name='index'),
+    path('category/<str:tag>', views.DishesViewCategory.as_view(), name='index-category'),
+    path('search/', views.DishesViewSearch.as_view(), name='search'),
     path('about/', views.About.as_view(), name='about'),
     path('post/<int:pk>', views.DishesDetailView.as_view(), name='post'),
     path('contact/', views.Contact.as_view(), name='contact'),

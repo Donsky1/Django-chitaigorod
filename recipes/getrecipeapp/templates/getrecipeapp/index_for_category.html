@@ -1,0 +1,23 @@
+{% extends 'base_templates.html' %}
+{% block style %}
+    <style>
+       .leftimg {
+        float:left; /* Выравнивание по левому краю */
+        margin: 34px 17px 7px 0; /* Отступы вокруг картинки */
+       }
+      </style>
+{% endblock %}
+{% block context %}
+    {% include "getrecipeapp/search_template.html" %}
+    <div class="col-md-10">
+        {% include "getrecipeapp/tags_template.html" %}
+        {% include "getrecipeapp/get_count_dishes_template.html" %}
+        {% include "getrecipeapp/view_dishes_template.html" %}
+        <!-- Divider-->
+        <hr class="my-4" />
+            <span class="current" style="display: block; text-align: center;">
+                Страница: {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+            </span>
+        </div></br>
+{% include "getrecipeapp/paginate_template.html" %}
+{% endblock %}

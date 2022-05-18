@@ -1,0 +1,13 @@
+<div class="pagination col-md-10" style="display: block; text-align: center;">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a class="btn btn-primary text-uppercase" href="?page=1">Первая</a>
+            <a class="btn btn-primary text-uppercase" href="?page={{ page_obj.previous_page_number }}">&laquo; Предыдущая</a>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <a class="btn btn-primary text-uppercase" href="?page={{ page_obj.next_page_number }}">Следующая &raquo;</a>
+            <a class="btn btn-primary text-uppercase" href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+        {% endif %}
+    </span>
+</div>
