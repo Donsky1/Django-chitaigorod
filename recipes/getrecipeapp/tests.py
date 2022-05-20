@@ -1,3 +1,4 @@
+import faker
 from django.test import TestCase, Client
 from getrecipeapp.models import Dishes, Tag, Category, Complexity, validate_image
 from mixer.backend.django import mixer
@@ -9,6 +10,7 @@ from django.urls import reverse, reverse_lazy
 from faker import Faker
 from tqdm import tqdm
 from django.contrib.auth.models import User
+from rest_framework.test import APIRequestFactory
 
 
 # Create your tests here.
@@ -142,7 +144,6 @@ class TestOpenView(TestCase):
         url = reverse_lazy('dishes:index-category', kwargs={'tag': str(Dishes.objects.last().category.name)})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-
 
 
 class TestTemplateView(TestCase):

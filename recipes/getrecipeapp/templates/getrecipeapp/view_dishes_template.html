@@ -14,7 +14,6 @@
             Категории: {% for tag in item.tags.all %}
                 <a href="{% url 'dishes:index-category' tag=tag.name %}">{{ tag.name }}</a>,
             {% endfor %}
-<!--                {{ item.tags.all|join:', '}}-->
         </p>
         {% if user.is_authenticated %}
         <p class="post-meta article" style="text-align: right">Статью:
