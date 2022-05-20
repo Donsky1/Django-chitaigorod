@@ -1,5 +1,7 @@
 {% extends 'base_templates.html' %}
+{% load cache %}
 {% block context %}
+{% cache 500 form_create_dishes %}
 <main class="mb-4">
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -15,4 +17,5 @@
         </div>
     </div>
 </main>
+{% endcache %}
 {% endblock %}

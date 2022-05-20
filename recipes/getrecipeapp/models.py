@@ -63,7 +63,7 @@ def validate_image(image_obj):
 class Dishes(IsActiveMixin):
     title = models.CharField(max_length=64, unique=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, related_name='tags')
     complexity = models.ForeignKey(Complexity, on_delete=models.CASCADE)
     timeprocess = models.CharField(max_length=16, blank=True)
     calories = models.CharField(max_length=6, blank=True)

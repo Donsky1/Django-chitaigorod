@@ -15,7 +15,9 @@ class DishesView(ListView):
     template_name = 'getrecipeapp/index.html'
     context_object_name = 'dishes'
     ordering = '-id'
-    queryset = Dishes.active_objects.all()
+    queryset = Dishes.active_objects. \
+        select_related('complexity'). \
+        prefetch_related('tags').all()
     extra_context = {'title': 'Главная страница'}
 
 
@@ -29,8 +31,10 @@ class DishesViewCategory(ListView):
 
     def get_queryset(self):
         tag = self.kwargs['tag']
-        self.result = Dishes.active_objects.filter(tags__name__icontains=tag)
-        return self.result
+        result = Dishes.active_objects.\
+            select_related('complexity').\
+            prefetch_related('tags').filter(tags__name__icontains=tag)
+        return result
 
 
 class DishesViewSearch(ListView):
@@ -46,10 +50,11 @@ class DishesViewSearch(ListView):
         result = Dishes.active_objects.all()
         q = self.request.GET['q']
         if q:
-            result = Dishes.active_objects.filter(Q(title__icontains=q) |
-                                                  Q(tags__name__icontains=q) |
-                                                  Q(description__icontains=q) |
-                                                  Q(description_full__icontains=q))
+            result = Dishes.active_objects.select_related('complexity'). \
+                prefetch_related('tags').filter(Q(title__icontains=q) |
+                                                Q(tags__name__icontains=q) |
+                                                Q(description__icontains=q) |
+                                                Q(description_full__icontains=q))
         return result
 
 
