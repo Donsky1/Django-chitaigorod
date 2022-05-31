@@ -5,7 +5,7 @@
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <div class="my-5">
-                    <form method="post">
+                    <form method="post" id="form">
                         {% csrf_token %}
                         {{ form.as_table }}</br>
                         <button class="btn btn-success text-uppercase" id="submitButton" type="submit">Отправить</button>

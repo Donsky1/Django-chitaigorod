@@ -1,7 +1,11 @@
-<p class="post-meta" style="font-size:11pt">
-    Все теги ({{ tag_list|length }}):
-{% for tag in tag_list %}
-    <a href="{% url 'dishes:index-category' tag=tag.name %}">{{ tag.name }}</a>
-{% endfor %}
+<p class="post-meta">
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        Все теги ({{ tag_list|length }}):
+    </button>
+  <div class="collapse" id="collapseExample">
+    {% for tag in tag_list %}
+     <a href="{% url 'dishes:index-category' tag=tag.name %}">{{ tag.name }}</a>
+    {% endfor %}
+  </div>
 </p>
 <hr>
