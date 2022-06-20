@@ -17,24 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework import routers
-from getrecipeapp.api_views import CategoryViewSet, TagViewSet, ComplexityViewSet, DishesViewSet, DishesActiveViewSet
 
-router = routers.DefaultRouter()
-router.register('category', CategoryViewSet)
-router.register('tag', TagViewSet)
-router.register('complexity', ComplexityViewSet)
-router.register('dish', DishesViewSet)
-
-dish_active = routers.DefaultRouter()
-dish_active.register('dish_active', DishesActiveViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('getrecipeapp.urls', namespace='dishes')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api/v0/', include(router.urls)),
-    path('api/v1/', include(dish_active.urls)),
 ]
 
 if settings.DEBUG:
