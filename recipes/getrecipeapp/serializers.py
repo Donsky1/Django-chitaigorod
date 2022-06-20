@@ -1,32 +1,36 @@
 from .models import Dishes, Category, Tag, Complexity
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
 
 
-class TagSerializer(serializers.HyperlinkedModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = '__all__'
 
 
-class ComplexitySerializer(serializers.HyperlinkedModelSerializer):
+class ComplexitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Complexity
         fields = '__all__'
 
 
-class DishesSerializer(serializers.HyperlinkedModelSerializer):
+class DishesActiveSerializer(serializers.ModelSerializer):
+    tags = serializers.StringRelatedField(many=True)
+    category = serializers.StringRelatedField()
+
     class Meta:
         model = Dishes
-        fields = ('title', 'category', 'tags')
+        fields = '__all__'
 
 
-class DishesActiveSerializer(serializers.HyperlinkedModelSerializer):
+class UsersSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Dishes
-        fields = ('title', 'category', 'rating', 'description', 'description_full', 'link')
+        model = User
+        fields = '__all__'

@@ -1,0 +1,16 @@
+{% extends 'base_templates.html' %}
+{% block context %}
+<main class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          Пользователь: &nbsp; {{ user }} </br>
+          Token: &nbsp; {{ user.auth_token }}
+        </div>
+        <hr>
+        <form action="{% url 'dishes:generate_token' %}" method="post" class="row">
+            {% csrf_token %}
+            <button type="submit">Generate token</button>
+        </form>
+    </div>
+</main>
+{% endblock %}

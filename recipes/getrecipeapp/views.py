@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, get_list_or_404
+from django.shortcuts import redirect, get_list_or_404, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from .models import Dishes, Tag
 from .forms import ContactForm, RegistrationForm
@@ -7,6 +7,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 
 class DishesView(ListView):
@@ -31,8 +33,8 @@ class DishesViewCategory(ListView):
 
     def get_queryset(self):
         tag = self.kwargs['tag']
-        result = Dishes.active_objects.\
-            select_related('complexity').\
+        result = Dishes.active_objects. \
+            select_related('complexity'). \
             prefetch_related('tags').filter(tags__name__icontains=tag)
         return result
 
@@ -44,7 +46,6 @@ class DishesViewSearch(ListView):
     ordering = '-id'
     context_object_name = 'dishes'
     extra_context = {'title': 'Поиск'}
-    allow_empty = False
 
     def get_queryset(self):
         result = Dishes.active_objects.all()
@@ -137,3 +138,26 @@ class UserRegistrationView(CreateView):
 class AccessDenied(TemplateView):
     template_name = 'getrecipeapp/accesdenied.html'
     extra_context = {'title': 'Доступ запрещен'}
+
+
+class DetailUser(DetailView):
+    model = User
+    template_name = 'getrecipeapp/user.html'
+    extra_context = {'title': 'Профиль пользователя'}
+
+    def get_queryset(self):
+        user = self.request.user
+        return User.objects.filter(id=user.id)
+
+
+def generate_token(request):
+    user = request.user
+    try:
+        if user.auth_token:
+            user.auth_token.delete()
+            Token.objects.create(user=user)
+        else:
+            Token.objects.create(user=user)
+    except Token.DoesNotExist:
+        Token.objects.create(user=user)
+    return HttpResponseRedirect(reverse_lazy('dishes:user-profile', kwargs={'pk': user.pk}))

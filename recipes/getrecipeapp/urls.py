@@ -14,9 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.urls import path
+from django.urls import path, include
 from getrecipeapp import views
 from django.contrib.auth.views import LogoutView
+from rest_framework import routers
+from getrecipeapp.api_views import CategoryViewSet, TagViewSet, ComplexityViewSet, DishesActiveViewSet, UserViewSet
+
+router = routers.DefaultRouter()
+router.register('category', CategoryViewSet)
+router.register('tag', TagViewSet)
+router.register('complexity', ComplexityViewSet)
+router.register('dish_active', DishesActiveViewSet)
+router.register('users', UserViewSet)
 
 app_name = 'getrecipeapp'
 
@@ -34,4 +43,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', views.UserRegistrationView.as_view(), name='register'),
     path('access_denied/', views.AccessDenied.as_view(), name='access_denied'),
+    path('profile/<int:pk>', views.DetailUser.as_view(), name='user-profile'),
+    path('generate-token/', views.generate_token, name='generate_token'),
+    path('api/v0/', include(router.urls)),
 ]
